@@ -1,0 +1,6 @@
+repos:
+  - repo: https://github.com/pablo0722/Commitizen-Enhanced
+    rev: v1.00.1
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]

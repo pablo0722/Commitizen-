@@ -1,0 +1,175 @@
+{
+    "commitizen": {
+	"name": "cz_customize",
+    "version": "0.1.0",
+        "customize": {
+            "retry": true,
+            "message_template": "{{type}}{{scope}}{{subtype}}: {{message}}{% if body %}\n\n{{body}}{% endif %}{% if doc %}\n\ndoc: {{doc}}{% if BreakingChange %}\nBREAKING CHANGE: {{BreakingChange}}{% endif %}{% else %}{% if BreakingChange %}\n\nBREAKING CHANGE: {{BreakingChange}}{% endif %}{% endif %}",
+            "example": "feature: this feature enable customize through config file",
+            "schema": ["{type}{scope}{subtype}: {message}",
+                "",
+                "{body}",
+                "",
+                "{footer}"
+              ],
+            "max_len": 100,
+            "schema_pattern": {
+                "subtype": "(!|?)?",
+                "type": "(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|clean|hotfix|merge)",
+                "scope": "(\\(.+\\))?:",
+                "message": "(\\s[^A-Z\\n].*[^.])",
+                "body": "(\\n(\\n[^A-Z\\n].*[^.])+)?",
+                "footer": "(\\n(?=\\n.)((\\ndoc: [^A-Z\\n].*[^.])?(\\nBREAKING CHANGE: [^A-Z\\n].*[^.])?))?"
+              },
+            "bump_pattern": "^(break|new|fix|hotfix)",
+            "bump_map": {
+                "break": "MAJOR",
+                "new": "MINOR",
+                "fix": "PATCH",
+                "hotfix": "PATCH"
+            },
+            "change_type_order": ["BREAKING CHANGE", "feat", "fix", "refactor", "perf"],
+	        "info_path": "cz_customize_info.txt",
+            "info": "This is customized info",
+            "questions": [
+                {
+                    "name": "type",
+                    "message": "Select the type of change you are committing",
+                    "type": "list",
+                    "choices": [
+                        {
+                            "value": "build",
+                            "name": "build: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)"
+                        },
+                        {
+                            "value": "docs",
+                            "name": "docs: Documentation only changes"
+                        },
+                        {
+                            "value": "feat",
+                            "name": "feat: A new feature"
+                        },
+                        {
+                            "value": "fix",
+                            "name": "fix: A bug fix"
+                        },
+                        {
+                            "value": "perf",
+                            "name": "perf: A code change that improves performance"
+                        },
+                        {
+                            "value": "refactor",
+                            "name": "refactor: A code change restructure a source code, altering its internal structure without changing its external behavior"
+                        },
+                        {
+                            "value": "style",
+                            "name": "style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)"
+                        },
+                        {
+                            "value": "test",
+                            "name": "test: Adding missing tests or correcting existing tests"
+                        },
+                        {
+                            "value": "clean",
+                            "name": "clean: Removes code or files, move file between directories, create new directories"
+                        },
+                        {
+                            "value": "hotfix",
+                            "name": "hotfix: Small critical fix e.g. a semi-colon which without it program does not work"
+                        },
+                        {
+                            "value": "merge",
+                            "name": "merge: Branch merge, In the subject it must say:   branch 'A into 'B'"
+                        },
+                        {
+                            "value": "revert",
+                            "name": "revert: reverts a previous commit.\nCommit subject must be the subject of the reverted commit. In the body it should say: \"this reverts commit <hash>\", where the hash is the SHA of the commit being reverted"
+                        },
+                        {
+                            "value": "ci",
+                            "name": "ci: Changes on continuous integration, git hooks, configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)"
+                        },
+                        {
+                            "value": "chore",
+                            "name": "chore: Updating grunt tasks etc; no production code change"
+                        }
+                    ]
+                },
+                {
+                    "name": "scope",
+                    "message": "(Optional) Select the scope of change you are committing",
+                    "type": "list",
+                    "choices": [
+                        {
+                            "value": "",
+                            "name": "no scope: ---"
+                        },
+                        {
+                            "value": "(frontend)",
+                            "name": "frontend: Frontend changes"
+                        },
+                        {
+                            "value": "(view)",
+                            "name": "view: view from /resources/views/ and/or routes from /routes/"
+                        },
+                        {
+                            "value": "(db)",
+                            "name": "db: Database"
+                        },
+                        {
+                            "value": "(auth)",
+                            "name": "auth: Authentication/Authorization"
+                        },
+                        {
+                            "value": "(laravel)",
+                            "name": "laravel: laravel backend and other configurations"
+                        },
+                        {
+                            "value": "(cmd)",
+                            "name": "cmd: Command from /routes/console/"
+                        }
+                    ]
+                },
+                {
+                    "name": "subtype",
+                    "message": "(Optional) Select the subtype of change you are committing",
+                    "type": "list",
+                    "choices": [
+                        {
+                            "value": "",
+                            "name": "no subtype: ---"
+                        },
+                        {
+                            "value": "!",
+                            "name": "BREAKING CHANGE: introduces a breaking API change"
+                        },
+                        {
+                            "value": "?",
+                            "name": "PARTIAL COMMIT: introduces a non-functional commit"
+                        }
+                    ]
+                },
+                {
+                    "name": "message",
+                    "message": "message of the commit",
+                    "type": "input"
+                },
+                {
+                    "name": "body",
+                    "message": "(Optional) Add body",
+                    "type": "input"
+                },
+                {
+                    "name": "doc",
+                    "message": "(Optional) Add reference to a documentation",
+                    "type": "input"
+                },
+                {
+                    "name": "BreakingChange",
+                    "message": "(Optional) Detail a breaking API change",
+                    "type": "input"
+                }
+            ]
+        }
+    }
+}
