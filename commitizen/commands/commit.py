@@ -111,6 +111,7 @@ class Commit:
             raise CommitError()
 
         if "nothing added" in c.out or "no changes added to commit" in c.out:
+            pass
         else:
             with contextlib.suppress(FileNotFoundError):
                 os.remove(self.temp_file)
