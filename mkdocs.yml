@@ -1,0 +1,36 @@
+site_name: Commitizen
+site_description: commit rules, semantic version, conventional commits
+
+theme:
+    name: 'material'
+
+repo_name: commitizen-tools/commitizen
+repo_url: https://github.com/commitizen-tools/commitizen
+edit_uri: ""
+
+nav:
+    - Introduction: 'README.md'
+    - Commands:
+        - Init: 'init.md'
+        - Bump: 'bump.md'
+        - Check: 'check.md'
+        - Changelog: 'changelog.md'
+    - Configuration: 'config.md'
+    - Customization: 'customization.md'
+    - Tutorials:
+        - Writing commits: 'tutorials/writing_commits.md'
+        - GitLab CI: 'tutorials/gitlab_ci.md'
+        - Github Actions: 'tutorials/github_actions.md'
+        - Jenkins pipeline: 'tutorials/jenkins_pipeline.md'
+    - FAQ: 'faq.md'
+    - Exit Codes: 'exit_codes.md'
+    - Third-Party Commitizen Templates: 'third-party-commitizen.md'
+    - Contributing: 'contributing.md'
+    - Resources: 'external_links.md'
+
+markdown_extensions:
+  - markdown.extensions.codehilite:
+      guess_lang: false
+  - admonition
+  - codehilite
+  - extra
