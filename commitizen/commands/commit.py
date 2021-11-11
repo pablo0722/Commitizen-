@@ -49,7 +49,26 @@ class Commit:
         for question in filter(lambda q: q["type"] == "list", questions):
             question["use_shortcuts"] = self.config.settings["use_shortcuts"]
         try:
-            answers = questionary.prompt(questions, style=cz.style)
+            answers = {}
+            for q in questions:
+                if q["type"] == "multiline":
+                    q["type"] = "input"
+                    message = q["message"]
+                    i = 1
+                    q["message"] = message + " (line " + str(i) + ")"
+                    a = questionary.prompt(q, style=cz.style)
+                    key = list(a.keys())[0]
+                    value = list(a.values())[0]
+                    while list(a.values())[0] is not '':
+                        i = i + 1
+                        q["message"] = message + " (line " + str(i) + ")"
+                        a = questionary.prompt(q, style=cz.style)
+                        if list(a.values())[0] is not '':
+                            value += "\n" + list(a.values())[0]
+                    answer = {key: value}
+                else:
+                    answer = questionary.prompt(q, style=cz.style)
+                answers.update(answer)
         except ValueError as err:
             root_err = err.__context__
             if isinstance(root_err, CzException):
@@ -58,6 +77,7 @@ class Commit:
 
         if not answers:
             raise NoAnswersError()
+
         return cz.message(answers)
 
     def __call__(self):
@@ -66,6 +86,7 @@ class Commit:
         if git.is_staging_clean() and not dry_run:
             raise NothingToCommitError("No files added to staging!")
 
+        check_only: bool = self.config.settings["customize"].get("check_only")
         retry: bool = self.arguments.get("retry")
 
         if retry:
@@ -83,24 +104,25 @@ class Commit:
         signoff: bool = self.arguments.get("signoff")
 
         if signoff:
-            co = git.commit(m, "-s")
+            co = git.commit(m, check_only, "-s")
         else:
-            co = git.commit(m)
+            co = git.commit(m, check_only)
         c=co["c"]
         c2=co["c2"]
 
-        if c.return_code != 0:
-            out.info(c.out)
-            out.error(c.err)
+        out.info(c.out)
+        out.error(c.err)
 
+        if c.return_code != 0:
             # Create commit backup
             with open(self.temp_file, "w") as f:
                 f.write(m)
 
-            raise CommitError()
+            if check_only == True:
+                out.success("check has errors but try to commit anyway")
+            else:
+                raise CommitError()
 
-        out.info(c.out)
-        out.error(c.err)
         out.info(c2.out)
         out.error(c2.err)
 
@@ -115,4 +137,5 @@ class Commit:
         else:
             with contextlib.suppress(FileNotFoundError):
                 os.remove(self.temp_file)
+
             out.success("Commit successful!")

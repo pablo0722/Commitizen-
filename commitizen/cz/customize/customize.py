@@ -61,6 +61,7 @@ class CustomizeCommitsCz(BaseCommitizen):
         out.info(f"\n{msg}\n")
 
         m_split = msg.splitlines()
+        check_only = self.custom_settings.get("check_only")
         if "max_len" not in self.config.settings["customize"]:
             max_len = 100
         else:
@@ -71,7 +72,10 @@ class CustomizeCommitsCz(BaseCommitizen):
             if (len(m_s) > max_len):
                 out.error(f"line {i} exceeds {max_len} characters:")
                 out.info(f"{m_s}\n")
-                error=True
+                if check_only == True:
+                    error=False
+                else:
+                    error=True
         if (error == True):
             return ""
 
