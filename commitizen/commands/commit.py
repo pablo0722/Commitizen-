@@ -86,7 +86,8 @@ class Commit:
         if git.is_staging_clean() and not dry_run:
             raise NothingToCommitError("No files added to staging!")
 
-        check_only: bool = self.config.settings["customize"].get("check_only")
+        check_only: bool = False
+        #check_only = self.arguments.get("check_only")
         retry: bool = self.arguments.get("retry")
 
         if retry:
@@ -94,9 +95,13 @@ class Commit:
         else:
             m = self.prompt_commit_questions()
 
-        if (m == ""):
-            out.error("Commit canceled")
-            return
+        confirmed: bool = True
+        if (m.startswith("|nonconfirmed|")):
+            confirmed = False
+            m = m.replace("|nonconfirmed|", "")
+            check_only = True
+            
+        out.success(check_only)
 
         if dry_run:
             raise DryRunExit()
@@ -118,19 +123,20 @@ class Commit:
             with open(self.temp_file, "w") as f:
                 f.write(m)
 
-            if check_only == True:
+            if check_only == True and confirmed == True:
                 out.success("check has errors but try to commit anyway")
             else:
                 raise CommitError()
 
-        out.info(c2.out)
-        out.error(c2.err)
+        if c2 is not None:
+            out.info(c2.out)
+            out.error(c2.err)
 
-        if c2.return_code != 0:
-            # Create commit backup
-            with open(self.temp_file, "w") as f:
-                f.write(m)
-            raise CommitError()
+            if c2.return_code != 0:
+                # Create commit backup
+                with open(self.temp_file, "w") as f:
+                    f.write(m)
+                raise CommitError()
 
         if "nothing added" in c.out or "no changes added to commit" in c.out:
             pass
@@ -138,4 +144,9 @@ class Commit:
             with contextlib.suppress(FileNotFoundError):
                 os.remove(self.temp_file)
 
-            out.success("Commit successful!")
+            out.success("Commit validation: successful!")
+            
+            if confirmed == True:
+                out.success("Commit successful!")
+            else:
+                out.error("Nothing was commited (unconfirmed message)")

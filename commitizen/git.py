@@ -65,7 +65,7 @@ def commit(message: str, check_only: bool, args: str = ""):
     f.close()
     c = cmd.run(f"cz check --commit-msg-file {f.name}")
     c2 = None
-    if c.return_code == 0 or check_only == True:
+    if c.return_code == 0 and check_only == False:
         c2 = cmd.run(f"git commit {args} -F {f.name}")
     os.unlink(f.name)
     return {"c":c, "c2":c2}

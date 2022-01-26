@@ -82,7 +82,7 @@ class CustomizeCommitsCz(BaseCommitizen):
         if (answers["confirmation"]):
             return msg
         else:
-            return ""
+            return "|nonconfirmed|" + msg
 
     def example(self) -> Optional[str]:
         return self.custom_settings.get("example")
