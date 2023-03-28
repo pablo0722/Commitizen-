@@ -59,13 +59,13 @@ def tag(tag: str, annotated: bool = False):
     return c
 
 
-def commit(message: str, check_only: bool, args: str = ""):
+def commit(message: str, check_only: bool, force_commit: bool, args: str = ""):
     f = NamedTemporaryFile("wb", delete=False)
     f.write(message.encode("utf-8"))
     f.close()
     c = cmd.run(f"cz check --commit-msg-file {f.name}")
     c2 = None
-    if c.return_code == 0 and check_only == False:
+    if (force_commit) or (c.return_code == 0 and check_only == False):
         c2 = cmd.run(f"git commit {args} -F {f.name}")
     os.unlink(f.name)
     return {"c":c, "c2":c2}

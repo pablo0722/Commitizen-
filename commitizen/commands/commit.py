@@ -86,8 +86,11 @@ class Commit:
         if git.is_staging_clean() and not dry_run:
             raise NothingToCommitError("No files added to staging!")
 
+        force_commit: bool = False
+        force_commit = self.arguments.get("force_commit")
+
         check_only: bool = False
-        #check_only = self.arguments.get("check_only")
+
         retry: bool = self.arguments.get("retry")
 
         if retry:
@@ -100,6 +103,11 @@ class Commit:
             confirmed = False
             m = m.replace("|nonconfirmed|", "")
             check_only = True
+
+        if(confirmed and force_commit):
+            force_commit = True
+        else:
+            force_commit = False
             
         out.success(check_only)
 
@@ -109,9 +117,9 @@ class Commit:
         signoff: bool = self.arguments.get("signoff")
 
         if signoff:
-            co = git.commit(m, check_only, "-s")
+            co = git.commit(m, check_only, force_commit, "-s")
         else:
-            co = git.commit(m, check_only)
+            co = git.commit(m, check_only, force_commit)
         c=co["c"]
         c2=co["c2"]
 
@@ -123,7 +131,7 @@ class Commit:
             with open(self.temp_file, "w") as f:
                 f.write(m)
 
-            if check_only == True and confirmed == True:
+            if check_only == False and confirmed == True:
                 out.success("check has errors but try to commit anyway")
             else:
                 raise CommitError()

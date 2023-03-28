@@ -61,7 +61,8 @@ class CustomizeCommitsCz(BaseCommitizen):
         out.info(f"\n{msg}\n")
 
         m_split = msg.splitlines()
-        check_only = self.custom_settings.get("check_only")
+        check_only: bool = True
+        #check_only = self.custom_settings.get("check_only")
         if "max_len" not in self.config.settings["customize"]:
             max_len = 100
         else:
